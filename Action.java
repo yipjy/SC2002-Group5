@@ -6,3 +6,4 @@ public interface Action {
     boolean canUse(Combatant user);
     String getName();
 }
+
