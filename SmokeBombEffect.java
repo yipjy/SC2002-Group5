@@ -1,6 +1,6 @@
 public class SmokeBombEffect extends StatusEffect {
     public SmokeBombEffect() {
-        super(2);
+        super(3);
     }
 
 
