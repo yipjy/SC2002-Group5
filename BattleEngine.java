@@ -47,7 +47,9 @@ public class BattleEngine {
                 processTurn(actor);
             }
             checkBattleEnd();
-            roundCount++;
+            if (!battleOver) {
+                roundCount++; 
+            }
         }
     }
 
