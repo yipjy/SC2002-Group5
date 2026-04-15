@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class Potion extends Item {
+public class Potion extends Item { // Author: R.V.
     private static final int HEAL_AMOUNT = 100;
 
 
