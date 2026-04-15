@@ -1,4 +1,4 @@
-public class SmokeBombEffect extends StatusEffect {
+public class SmokeBombEffect extends StatusEffect {    // Author: JY
     public SmokeBombEffect() {
         super(3);
     }
