@@ -1,0 +1,28 @@
+@startuml
+actor PlayerUser as User
+boundary GameCLI
+control BattleEngine
+entity Warrior
+entity ShieldBash
+entity Goblin
+entity StunEffect
+
+User -> GameCLI: choose "Shield Bash"
+GameCLI -> BattleEngine: submitAction(ShieldBash, Goblin)
+
+BattleEngine -> Warrior: getSpecialSkill()
+Warrior --> BattleEngine: ShieldBash
+
+BattleEngine -> ShieldBash: activate(Warrior, Goblin)
+ShieldBash -> Goblin: takeDamage( max(0, 40 - 15) )
+Goblin --> ShieldBash: HP updated
+
+create StunEffect
+ShieldBash -> StunEffect: create()
+ShieldBash -> Goblin: addStatusEffect(StunEffect)
+Goblin --> ShieldBash: status updated
+
+ShieldBash --> BattleEngine: skill resolved
+BattleEngine -> Warrior: setCooldown(3)
+BattleEngine -> GameCLI: displayResult("Goblin takes 25 damage and is stunned")
+@enduml
