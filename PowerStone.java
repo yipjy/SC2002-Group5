@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class PowerStone extends Item {
+public class PowerStone extends Item { // Author: R.V.
     public PowerStone() { super("Power Stone"); }
 
 
