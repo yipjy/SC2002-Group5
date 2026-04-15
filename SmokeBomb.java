@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class SmokeBomb extends Item {
+public class SmokeBomb extends Item { // Author: R.V.
     public SmokeBomb() { super("Smoke Bomb"); }
 
 
