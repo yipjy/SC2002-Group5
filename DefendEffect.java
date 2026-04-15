@@ -1,4 +1,4 @@
-public class DefendEffect extends StatusEffect {
+public class DefendEffect extends StatusEffect {    // Author: JY
     private static final int DEFENSE_BOOST = 10;
 
 
