@@ -3,7 +3,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public abstract class Combatant {
+public abstract class Combatant {    // Author: JY
     protected String name;
     protected int maxHp;
     protected int hp;
