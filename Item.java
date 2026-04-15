@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public abstract class Item {
+public abstract class Item { // Author: R.V.
     protected String name;
 
 
