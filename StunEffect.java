@@ -1,4 +1,4 @@
-public class StunEffect extends StatusEffect {
+public class StunEffect extends StatusEffect {    // Author: JY
     public StunEffect() {
         super(2);
     }
