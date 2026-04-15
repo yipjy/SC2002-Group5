@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class Player extends Combatant {
+public abstract class Player extends Combatant {    // Author: JY
     protected List<Item> items;
     protected SpecialSkill specialSkill;
     protected int cooldown;
