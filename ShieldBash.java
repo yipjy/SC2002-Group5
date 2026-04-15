@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class ShieldBash implements SpecialSkill {
+public class ShieldBash implements SpecialSkill { // Author: R.V.
     public void activate(Player user, List<Combatant> targets) {
         Combatant target = targets.get(0);
         int damage = Math.max(0, user.getAttack() - target.getDefense());
