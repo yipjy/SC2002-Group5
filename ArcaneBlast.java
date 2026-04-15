@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class ArcaneBlast implements SpecialSkill {
+public class ArcaneBlast implements SpecialSkill { // Author: R.V.
     public void activate(Player user, List<Combatant> targets) {
         for (Combatant target : targets) {
             if (target.isAlive()) {
