@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class UseItem implements Action {
+public class UseItem implements Action { // Author: R.V.
     private final int itemIndex;
 
 
