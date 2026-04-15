@@ -1,0 +1,361 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+abstract class “Combatant” {
+	# name : String
+# maxHp : int
+# hp : int
+# attack : int
+# defense : int
+# speed : int
+# statusEffects : List<StatusEffect>
+
++ Combatant(name: String, maxHp: int, attack: int, defense: int, speed: int)
++ setHp(hp: int) : void
++ setAttack(attack: int) : void
++ setDefense(defense: int) : void
++ addStatusEffect(effect: StatusEffect) : void
+
+
++ getName() : String
++ getMaxHp() : int
++ getAttack() : int
++ getDefense() : int
++ getSpeed() : int
++ getStatusEffects() : List<StatusEffect>
+
+
++ isAlive() : boolean
++ canAct() : boolean
++ isInvulnerable() : boolean
++ hasStatusEffect(effectType: Class<? extends StatusEffect>) : boolean
+
+
++ takeDamage(damage: int) : void
++ heal(amount: int) : void
++ startTurn() : void
++ endTurn() : void
+}
+note left of "Combatant"
+    **Encapsulation**
+    Basic attributes are protected
+    Can <i>only</i> be accessed using public methods
+end note
+
+abstract class “Player”{
+# items : List<Item>
+# specialSkill : SpecialSkill
+# cooldown : int
+
+	+ Player(name: String, maxHp: int, attack: int, defense: int, speed: int, specialSkill: SpecialSkill)
+	+ addItem(item: Item) : void
+	+ setCooldown(cooldown: int) : void
+
+
+	+ getItem(index: int) : Item
+	+ getItems() : List<Item>
+	+ getSpecialSkill() : SpecialSkill
+	+ getCooldown() : int
+
+
+	+ consumeItem(index: int) : void
+	+ reduceCooldown() : void
+}
+”Combatant” <|-- ”Player”
+note top of "Player"
+   **Encapsulation**
+   Protected player's items and specialSkill
+   Can only be got from using public methods
+end note
+
+
+
+abstract class “Enemy”{
+	+ Enemy(name: String, maxHp: int, attack: int, defense: int, speed: int)
+}
+”Combatant” <|-- ”Enemy”
+
+class “Warrior”{
++ Warrior()
+}
+”Player” <|-- ”Warrior”
+
+class “Wizard”{
+	+ Wizard()
+}
+”Player” <|-- ”Wizard”
+
+class “Wolf”{
+	+ Wolf(name: String)
+}
+”Enemy” <|-- “Wolf”
+
+class “Goblin"{
+	+ Goblin(name: String)
+}
+“Enemy” <|-- “Goblin"
+
+note as N1
+**Inheritance**
+Player and Enemy reuse
+the common attributes and methods
+Player extends further with own
+unique action, item list, and special skill
+end note
+"Player" .. N1
+N1.."Enemy"
+
+abstract class “StatusEffect”{
+	# duration : int
+
+	+ StatusEffect(duration: int)
+	+ onApply(target: Combatant) : void
+	+ onTurnStart(target: Combatant) : void
+	+ onTurnEnd(target: Combatant) : void
+	+ onExpire(target: Combatant) : void
+	+ reduceDuration() : void
+
+
+	+ canAct() : boolean
+	+blocksIncomingDamage() : boolean
+	+ isExpired() : boolean
+}
+note left of "StatusEffect"
+   **Encapsulation** & **Abstraction**
+   Protected duration
+   can only be changed using methods safely
+   Each effect class can have own effect
+
+end note
+
+class “StunEffect”{
+	+ StunEffect()
+	+ canAct() : boolean
+}
+“StatusEffect”  <|-- “StunEffect”
+
+class ”DefendEffect”{
+	{static} - DEFENSE_BOOST : int = 10
++ DefendEffect()
+	+ onApply(target: Combatant) : void
+	+ onExpire(target: Combatant) : void
+}
+“StatusEffect”  <|-- “DefendEffect”
+
+class “SmokeBombEffect”{
+	+ SmokeBombEffect()
+	+ blocksIncomingDamage() : boolean
+}
+”StatusEffect”  <|-- “SmokeBombEffect”
+
+class “ArcaneBlastEffect”{
+	{static} - ATTACK_BOOST : int = 10
+	+ ArcaneBlastBuffEffect()
+	+ onApply(target: Combatant) : void
+	+ reduceDuration() : void
+	+  isExpired() : boolean
+}
+”StatusEffect”  <|-- “ArcaneBlastEffect”
+
+interface “SpecialSkill”{
+	activate(user: Player, targets: List<Combatant>) : void
+	getName() : String
+}
+note left of "SpecialSkill"
+    **Polymorphism**
+    each special skill has
+    its own way of activation
+end note
+
+class ShieldBash{
+	activate(user: Player, targets: List<Combatant>) : void
+	getName() : String
+}
+
+”SpecialSkill” <|.. “ShieldBash”
+
+class ArcaneBlast{
+	activate(user: Player, targets: List<Combatant>) : void
+	getName() : String
+}
+
+”SpecialSkill” <|.. “ArcaneBlast”
+
+abstract class “Item”{
+	# name : String
+
+	+ Item(name: String)
+	{abstract} + use(user: Player, targets: List<Combatant>) : void
+	+getName() : String
+}
+note top of "Item"
+    **Polymorphism** & **Abstraction**
+    Each item classes rewrite their own execution
+    Player can add any item inherits the abstract class
+end note
+
+class “Potion”{
+	{static} - HEAL_AMOUNT : int = 100
+
++ Potion()
++ use(user: Player, targets: List<Combatant>) : void
+}
+”Item”  <|-- “Potion”
+
+
+class “PowerStone”{
++ PowerStone()
++ use(user: Player, targets: List<Combatant>) : void
+}
+”Item”  <|-- “PowerStone”
+
+
+class “SmokeBomb”{
+	+ SmokeBomb()
+	+  use(user: Player, targets: List<Combatant>) : void
+}
+”Item”  <|-- “SmokeBomb”
+
+
+interface “Action”{
+	execute(user: Combatant, targets:List<Combatant>) : void
+	canUse(user: Combatant) : boolean
+	getName() : String
+}
+note bottom of "Action"
+    **Polymorphism**
+    The interface "Action" defines many methods
+    other actions classes implements the interface
+    BattleEngine class can receive Action as parameter
+    no need for write methods for every specific action
+end note
+
+class “BasicAttack”{
+	+ execute(user: Combatant, targets: List<Combatant>) : void
+	+ canUse(user: Combatant) : boolean
+	+ getName() : String
+}
+“Action” <|.. “BasicAttack”
+
+
+class “Defend”{
+	+ execute(user: Combatant, targets: List<Combatant>) : void
+	+ canUse(user: Combatant) : boolean
+	+ getName() : String
+}
+“Action” <|.. “Defend”
+
+
+class “UseItem”{
+	- itemIndex : int {final}
+
+	+ UseItem(itemIndex: int)
+	+ execute(user: Combatant, targets: List<Combatant>) : void
+	+ canUse(user: Combatant) : boolean
+	+ getName() : String
+}
+“Action” <|.. “UseItem”
+
+
+class “UseSpecialSkill”{
+	+ execute(user: Combatant, targets: List<Combatant>) : void
+	+ canUse(user: Combatant) : boolean
+	+ getName() : String
+}
+“Action” <|.. “UseSpecialSkill”
+
+class “BattleEngine”{
+	- player : Player
+	- activeEnemies : List<Enemy>
+	- initialWave : List<Enemy>
+	- backupWave : List<Enemy>
+	- turnOrderStrategy : TurnOrderStrategy
+	- cli: GameCLI
+	- roundCount : int
+	- backupSpawned : boolean
+	- battleOver : boolean
+
+	+ BattleEngine(player: Player, initialWave: List<Enemy>, backupWave: List<Enemy>, turnOrderStrategy: TurnOrderStrategy, cli: GameCLI)
+
+	+ getAliveCombatants() : List<Combatant>
+	+ getActiveEnemies() : List<Enemy>
+	+ getRoundCount() : int
+	+ isBattleOver() : boolean
+	+ getPlayer() : Player
+- getDefaultPlayerTargets() : List<Combatant>
+- getEnemyTargets() : List<Combatant>
+- getPlayerChosenAction(playerActor: Player) : Action
+- getPlayerChosenTargets(playerActor: Player, action: Action) : List<Combatant>
+
+
+	+ runBattle() : void
+	+ processTurn(actor: Combatant) : void
+	- handleTurnStartEffects(actor: Combatant) : void
+	- cannotAct(actor: Combatant) : boolean
+	- updateCooldown(actor: Combatant) : void
+	- updateEffectDuration(actor Combatant) : void
+	- removeDeadEnemies() : void
+	- spawnBackupIfNeeded() : void
+	- isInitialWaveCleared() : boolean
+	- checkBattleEnd() : void
+}
+note right of "BattleEngine"
+   **Encapsulation**
+   All entity classes involved are kept private
+   avoid outside changes
+   Round execution logic are encapsulated
+   only need the <b>public runBattle()</b> methods to drive the game
+end note
+
+
+interface “TurnOrderStrategy”{
+	determineOrder(combatants: List<Combatant>) : List<Combatant>
+}
+
+class “SpeedBasedTurnOrder”{
+	determineOrder(combatants: List<Combatant>) : List<Combatant>
+}
+“TurnOrderStrategy” <|..“SpeedBasedTurnOrder”
+
+class “GameCLI”{
+	- scanner : Scanner
+
+	+ GameCLI()
+	+ displayStatus(player: Player, enemies: List<Enemy>) : void
++ displayRoundStart(round: int) : void
+	+ displayVictory(player: Player, rounds:int) : void
+	+ displayDefeat(enemies: List<Enemy>, rounds: int) : void
+
+
+	+ chooseAction(player: Player) : Action
+	+ chooseTargets(player: Player, action: Action, activeEnemies: List<Enemy>) : List<Combatant>
+	- readInt(min: int, max: int) : int
+}
+
+“BattleEngine” o-- “1” “Player”
+“BattleEngine” o-- “*” “Enemy”
+“BattleEngine” o-- “TurnOrderStrategy”
+“BattleEngine” o-- “GameCLI”
+“Player” “1” o– “2”  “Item” : possess >
+“Player” *-- “SpecialSkill” : own >
+“Combatant” “1” *-- “0…*” “StatusEffect” : affected by >
+“GameCLI”*-- “Scanner” : rely on >
+
+“Combatant” <.. “TurnOrderStrategy”
+“Combatant” “1…*” <.. “Action” : targets <
+“Combatant” “1…*”  <.. “Item” : targets <
+“Player” <.. “Item” : use >
+“Combatant” <.. “SpecialSkill” : targets <
+“Player” <.. “SpecialSkill” : use >
+“Player” <.. “GameCLI”
+“Combatant” <.. “GameCLI”
+“Action” <.. “GameCLI”
+
+“SmokeBombEffect” <.. “SmokeBomb” : creates >
+“ArcaneBlastEffect” <.. “ArcaneBlast” : creates >
+
+
+@enduml
