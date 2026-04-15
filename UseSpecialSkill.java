@@ -1,7 +1,7 @@
 import java.util.List;
 
 
-public class UseSpecialSkill implements Action {
+public class UseSpecialSkill implements Action { // Author: R.V.
 
 
     // implementing execute from Action
