@@ -1,4 +1,4 @@
-public class ArcaneBlastBuffEffect extends StatusEffect {
+public class ArcaneBlastBuffEffect extends StatusEffect {    // Author: JY
     private static final int ATTACK_BOOST = 10;
 
 
