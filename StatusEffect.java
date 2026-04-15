@@ -1,4 +1,4 @@
-public abstract class StatusEffect {
+public abstract class StatusEffect {    // Author: JY
     protected int duration;
 
 
